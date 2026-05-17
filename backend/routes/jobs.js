@@ -68,7 +68,7 @@ router.post('/', protect, async (req, res, next) => {
 });
 
 // PATCH /api/jobs/:id - update status only
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', protect, async (req, res, next) => {
   try {
     const { status } = req.body;
     const validStatuses = ['Open', 'In Progress', 'Closed'];

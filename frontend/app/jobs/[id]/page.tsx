@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getJobById, updateJobStatus, deleteJob } from '../../../lib/api';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../../context/AuthContext'
 
 const STATUSES = ['Open', 'In Progress', 'Closed'];
 
@@ -26,6 +27,7 @@ interface Job {
 }
 
 export default function JobDetailPage() {
+  const { isAuthenticated } = useAuth()
   const { id } = useParams();
   const router = useRouter();
 
@@ -169,38 +171,41 @@ export default function JobDetailPage() {
         <hr className="border-gray-100" />
 
         {/* Status Update */}
-        <div>
-          <h2 className="text-xs font-semibold text-gray-400 uppercase mb-2">
-            Update Status
-          </h2>
-          <div className="flex gap-3">
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {STATUSES.map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </select>
-            <button
-              onClick={handleStatusUpdate}
-              disabled={updating || selectedStatus === job.status}
-              className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition disabled:opacity-40"
-            >
-              {updating ? 'Saving...' : 'Update'}
-            </button>
-          </div>
-        </div>
+        {isAuthenticated && (
+  <div>
+    <h2 className="text-xs font-semibold text-gray-400 uppercase mb-2">
+      Update Status
+    </h2>
+    <div className="flex gap-3">
+      <select
+        value={selectedStatus}
+        onChange={(e) => setSelectedStatus(e.target.value)}
+        className="border border-gray-300 rounded-lg px-3 py-2 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        {STATUSES.map((s) => (
+          <option key={s}>{s}</option>
+        ))}
+      </select>
+      <button
+        onClick={handleStatusUpdate}
+        disabled={updating || selectedStatus === job.status}
+        className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition disabled:opacity-40"
+      >
+        {updating ? 'Saving...' : 'Update'}
+      </button>
+    </div>
+  </div>
+)}
 
-        {/* Delete */}
-        <button
-          onClick={handleDelete}
-          disabled={deleting}
-          className="w-full border border-red-300 text-red-500 py-2 rounded-lg text-sm font-semibold hover:bg-red-50 transition disabled:opacity-40"
-        >
-          {deleting ? 'Deleting...' : 'Delete This Job'}
-        </button>
+{isAuthenticated && (
+  <button
+    onClick={handleDelete}
+    disabled={deleting}
+    className="w-full border border-red-300 text-red-500 py-2 rounded-lg text-sm font-semibold hover:bg-red-50 transition disabled:opacity-40"
+  >
+    {deleting ? 'Deleting...' : 'Delete This Job'}
+  </button>
+)}
       </div>
     </div>
   );

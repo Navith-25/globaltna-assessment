@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { getAllJobs, deleteJob } from '../lib/api'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import { useAuth } from '../context/AuthContext'
 
 const CATEGORIES = ['All', 'Plumbing', 'Electrical', 'Painting', 'Joinery', 'Other']
 const STATUSES = ['All', 'Open', 'In Progress', 'Closed']
@@ -54,6 +55,7 @@ export default function HomePage() {
   const [status, setStatus] = useState('All')
   const [search, setSearch] = useState('')
   const [searchInput, setSearchInput] = useState('')
+  const { isAuthenticated } = useAuth()
 
   const fetchJobs = useCallback(async () => {
     setLoading(true)
@@ -192,12 +194,14 @@ export default function HomePage() {
                 >
                   View Details
                 </Link>
+                {isAuthenticated && (
                 <button
                   onClick={() => handleDelete(job._id, job.title)}
                   className="px-3 py-2 text-sm text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition"
                 >
-                  Delete
+                    Delete
                 </button>
+              )}
               </div>
             </div>
           ))}
