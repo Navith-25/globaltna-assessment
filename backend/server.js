@@ -1,7 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const authRoutes = require('./routes/auth');
 require('dotenv').config();
+
 
 const jobRoutes = require('./routes/jobs');
 const errorHandler = require('./middleware/errorHandler');
@@ -14,6 +16,8 @@ app.use(express.json());
 
 // Routes
 app.use('/api/jobs', jobRoutes);
+app.use('/api/jobs', jobRoutes);
+app.use('/api/auth', authRoutes);
 
 // Health check
 app.get('/', (req, res) => {

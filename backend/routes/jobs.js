@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const JobRequest = require('../models/JobRequest');
+const { protect } = require('../middleware/auth');
 
 // Helper - 404 error
 const notFound = (res) =>
@@ -39,8 +40,8 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-// POST /api/jobs - create job
-router.post('/', async (req, res, next) => {
+// POST /api/jobs - create job (protected)
+router.post('/', protect, async (req, res, next) => {
   try {
     const { title, description, category, location, contactName, contactEmail } =
       req.body;
@@ -92,8 +93,8 @@ router.patch('/:id', async (req, res, next) => {
   }
 });
 
-// DELETE /api/jobs/:id - delete job
-router.delete('/:id', async (req, res, next) => {
+// DELETE /api/jobs/:id - delete job (protected)
+router.delete('/:id', protect, async (req, res, next) => {
   try {
     const job = await JobRequest.findByIdAndDelete(req.params.id);
     if (!job) return notFound(res);
